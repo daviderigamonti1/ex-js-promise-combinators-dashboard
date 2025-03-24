@@ -38,29 +38,44 @@ async function getDashboardData(query) {
         const weather = results[1];
         const airport = results[2];
         return {
-            city: destination[0].name,
-            country: destination[0].country,
-            temperature: weather[0].temperature,
-            weather: weather[0].weather_description,
-            airport: airport[0].name
+            city: destination[0]?.name || null,
+            country: destination[0]?.country || null,
+            temperature: weather[0]?.temperature || null,
+            weather: weather[0]?.weather_description || null,
+            airport: airport[0]?.name || null
         }
     } catch (err) {
         throw new Error(`Errore nel recupero dei dati: ${err.message}`)
     }
 }
 
-(async () => {
-    getDashboardData('london')
-        .then(data => {
-            console.log('Dasboard data:', data);
-            console.log(
-                `${data.city} is in ${data.country}.\n` +
-                `Today there are ${data.temperature} degrees and the weather is ${data.weather}.\n` +
-                `The main airport is ${data.airport}.\n`
-            );
-        })
-        .catch(error => console.error(error));
-})()
+getDashboardData('london')
+    .then(data => {
+        console.log('Dasboard data:', data);
+        console.log(
+            `${data.city} is in ${data.country}.\n` +
+            `Today there are ${data.temperature} degrees and the weather is ${data.weather}.\n` +
+            `The main airport is ${data.airport}.\n`
+        );
+    })
+    .catch(error => console.error(error));
+
+getDashboardData('vienna')
+    .then(data => {
+        console.log('Dasboard data:', data);
+        let phrase = '';
+        if (data.city !== null && data.country !== null) {
+            phrase += `${data.city} is in ${data.country}.\n`
+        }
+        if (data.temperature !== null && data.weather !== null) {
+            phrase += `Today there are ${data.temperature} degrees and the weather is ${data.weather}.\n`
+        }
+        if (data.airport !== null) {
+            phrase += `The main airport is ${data.airport}.\n`
+        }
+        console.log(phrase);
+    })
+    .catch(error => console.error(error));
 
 
 
@@ -68,7 +83,7 @@ async function getDashboardData(query) {
 
 
 // Bonus 1 - Risultato vuoto
-// Se l’array di ricerca è vuoto, invece di far fallire l'intera funzione, semplicemente i dati relativi a quella chiamata verranno settati a null e  la frase relativa non viene stampata. Testa la funzione con la query “vienna” (non trova il meteo).ù
+// Se l’array di ricerca è vuoto, invece di far fallire l'intera funzione, semplicemente i dati relativi a quella chiamata verranno settati a null e  la frase relativa non viene stampata. Testa la funzione con la query “vienna” (non trova il meteo).
 // Bonus 2 - Chiamate fallite
 // Attualmente, se una delle chiamate fallisce, ** Promise.all() ** rigetta l'intera operazione.
 
